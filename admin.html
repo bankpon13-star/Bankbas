@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>ระบบหลังบ้านผู้ดูแลระบบ - Admin Portal</title>
+    <style>
+        body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); font-family: 'Tahoma', sans-serif; margin: 0; padding: 30px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; color: #f8fafc; }
+        .admin-card { background: #1e293b; padding: 35px; border-radius: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.3); width: 100%; max-width: 850px; border: 1px solid #334155; }
+        .header { text-align: center; margin-bottom: 25px; }
+        .header h1 { margin: 0; font-size: 22px; color: #38bdf8; }
+        .header p { margin: 5px 0 0 0; font-size: 12px; color: #94a3b8; }
+        input { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #475569; border-radius: 8px; box-sizing: border-box; outline: none; background: #0f172a; color: #ffffff; font-size: 14px; }
+        button { width: 100%; padding: 12px; background: #38bdf8; color: #0f172a; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; }
+        button:hover { background: #0ea5e9; }
+        .admin-content { display: none; flex-direction: column; gap: 20px; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; background: #0f172a; border-radius: 12px; overflow: hidden; margin-top: 10px; }
+        th, td { padding: 10px 12px; border-bottom: 1px solid #334155; }
+        th { background: #0ea5e9; color: #0f172a; font-weight: bold; }
+        tr:hover { background: #1e293b; }
+        
+        .action-buttons { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-blue { background: #4f46e5; color: white; }
+        .btn-blue:hover { background: #4338ca; }
+        .btn-amber { background: #f59e0b; color: #0f172a; }
+        .btn-home { background: #64748b; color: #ffffff; margin-top: 8px; }
+        .badge-work { background: #10b981; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold;}
+    </style>
+</head>
+<body>
+    <div class="admin-card">
+        <div class="header">
+            <h1>🛡️ ผู้ดูแลระบบ (Admin Dashboard)</h1>
+            <p>ระบบตรวจสถิติเวลา วันเข้างานรายสัปดาห์ และส่งออกรายงานไฟล์ .txt</p>
+        </div>
+
+        <div id="loginGate">
+            <input type="text" id="adminUser" placeholder="ชื่อผู้ใช้ผู้ดูแลระบบ (Admin Username)" value="admin">
+            <input type="password" id="adminPass" placeholder="รหัสผ่านผู้ดูแลระบบ (Admin Password)" value="admin1234">
+            <button type="button" onclick="verifyAdminSิทธิ์()">ยืนยันตัวตนเข้าสู่ระบบหลังบ้าน</button>
+            <button type="button" onclick="window.location.href='index.html'" class="btn-home">⬅️ กลับหน้าหลัก Portal</button>
+        </div>
+
+        <div id="adminContent" class="admin-content">
+            <!-- 📊 ตารางประวัติชั่วโมงและวันเข้างานของทุกคน -->
+            <div>
+                <h3 style="color: #38bdf8; font-size: 14px; margin: 0 0 5px 0;">📊 รายงานตารางตรวจสอบเวลา และวันเข้างานรายสัปดาห์:</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ชื่อพนักงาน</th>
+                            <th>วันที่เข้างาน</th>
+                            <th>สถานที่พิกัด</th>
+                            <th>เวลาเข้า-ออก</th>
+                            <th>รวมชั่วโมงการทำงาน</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logsTableBody">
+                        <!-- รายงานประวัติคำนวณชั่วโมงจะวิ่งมากางแสดงตรงนี้ -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- โซนปุ่มสั่งการดาวน์โหลดและล้างข้อมูล -->
+            <div class="action-buttons">
+                <button type="button" onclick="downloadWeeklyReport()" class="btn-blue">💾 ดาวน์โหลดรายงาน 1 สัปดาห์ (.txt)</button>
+                <button type="button" onclick="resetAllTimeLogs()" class="btn-amber">🔥 ล้างบันทึกประวัติเวลาทั้งหมด</button>
+            </div>
+            <button type="button" onclick="window.location.href='index.html'" class="btn-home">⬅️ ปิดระบบ กลับสู่หน้าหลัก Portal</button>
+        </div>
+    </div>
+
+    <script>
+        function verifyAdminSิทธิ์() {
+            var user = document.getElementById('adminUser').value.trim();
+            var pass = document.getElementById('adminPass').value.trim();
+            if (user === "admin" && pass === "admin1234") {
+                document.getElementById('loginGate').style.display = "none";
+                document.getElementById('adminContent').style.display = "flex";
+                loadCalculatedLogs();
+            } else { alert("❌ รหัสผ่านผู้ดูแลระบบไม่ถูกต้อง"); }
+        }
+
+        // ฟังก์ชันดึงประวัติมาสรุปบนจอภาพ
+        function loadCalculatedLogs() {
+            var tbody = document.getElementById('logsTableBody');
+            tbody.innerHTML = "";
+            var logs = JSON.parse(localStorage.getItem('wp_logs_v2') || '[]');
+
+            if (logs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding: 20px;">📭 ปัจจุบันยังไม่มีประวัติการเช็คอินในรอบสัปดาห์</td></tr>';
+                return;
+            }
+
+            // แสดงรายการล่าสุดไว้บรรทัดบนสุด
+            for (var i = logs.length - 1; i >= 0; i--) {
+                var item = logs[i];
+                var timeDetails = "In: " + item.inTime + " | Out: " + item.outTime;
+                tbody.innerHTML += '<tr>' +
+                    '<td><b>👤 ' + item.name + '</b></td>' +
+                    '<td><span class="badge-work">📅 วันทำงาน</span> ' + item.date + '</td>' +
+                    '<td>📍 ' + item.location + '</td>' +
+                    '<td>' + timeDetails + '</td>' +
+                    '<td style="color:#38bdf8; font-weight:bold;">⏱️ ' + item.totalHours + '</td>' +
+                    '</tr>';
+            }
+        }
+
+        // 📝 ฟังก์ชันหัวใจหลัก: สรุปสถิติ 1 สัปดาห์ และสั่ง Export ไหลข้อมูลแปลงเป็นไฟล์ .txt ดรอปลงคอมพิวเตอร์
+        function downloadWeeklyReport() {
+            var logs = JSON.parse(localStorage.getItem('wp_logs_v2') || '[]');
+            
+            if (logs.length === 0) {
+                alert("⚠️ ไม่พบข้อมูลประวัติเวลาในระบบ ไม่สามารถสร้างรายงานได้ครับ");
+                return;
+            }
+
+            // จัดฟอร์แมตตัวหนังสือภายในไฟล์ข้อความ .txt ให้เรียบร้อย อ่านง่าย แยกบรรทัดชัดเจน
+            var reportContent = "==================================================\n";
+            reportContent += "     รายงานสรุปสถิติตรวจสอบเวลาเข้างานพนักงานรายสัปดาห์\n";
+            reportContent += "         ระบบ WorkPulse Dashboard Central System\n";
+            reportContent += "==================================================\n";
+            reportContent += "วันที่ออกรายงาน: " + new Date().toLocaleDateString('th-TH') + " เวลา " + new Date().toLocaleTimeString('th-TH') + "\n\n";
+
+            // สรุปยอดรวมจำนวนครั้งการเช็คอินเข้างานของพนักงานแต่ละคนแยกรายชื่อ
+            var summaryCount = {};
+            var summaryHours = {};
+
+            for (var i = 0; i < logs.length; i++) {
+                var name = logs[i].name;
+                summaryCount[name] = (summaryCount[name] || 0) + 1;
+            }
+
+            reportContent += "[ สรุปสถิติยอดรวมการเข้างานรายบุคคลในสัปดาห์นี้ ]\n";
+            for (var staff in summaryCount) {
+                reportContent += "• คุณ " + staff + " : เข้าปฏิบัติงานทั้งหมด " + summaryCount[staff] + " วัน (วันที่เหลือคือวันหยุด)\n";
+            }
+            reportContent += "\n--------------------------------------------------\n";
+            reportContent += "[ บันทึกรายละเอียดเวลาและพิกัดสถานที่ปฏิบัติงานเชิงลึก ]\n\n";
+
+            // ดึงรายละเอียดเชิงลึกของทุกรอบการทำงานเรียงลงมาด้านล่าง
+            for (var j = logs.length - 1; j >= 0; j--) {
+                var log = logs[j];
+                reportContent += "📌 ชื่อพนักงาน: " + log.name + "\n";
+                reportContent += "   วันที่ทำงาน : " + log.date + "\n";
+                reportContent += "   พิกัดสถานที่: " + log.location + "\n";
+                reportContent += "   เวลาเข้ากะ : " + log.inTime + "  |  เวลาออกกะ: " + log.outTime + "\n";
+                reportContent += "   รวมชั่วโมง  : " + log.totalHours + "\n";
+                reportContent += "--------------------------------------------------\n";
+            }
+
+            reportContent += "\n*** สิ้นสุดรายงานสรุปผลผู้ดูแลระบบ ***";
+
+            // ใช้กลไก Blob บีบข้อความเป็นไฟล์ข้อความสากล ดันทะลุการบล็อกของเบราว์เซอร์ดาวน์โหลดลงคอมได้ทันที
+            var blob = new Blob([reportContent], { type: "text/plain;charset=utf-8" });
+            var link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "รายงานเวลาพนักงาน_ประจำสัปดาห์.txt"; // ตั้งชื่อไฟล์ .txt ตอนเซฟลงคอม
+            link.click();
+        }
+
+        function resetAllTimeLogs() {
+            if (confirm("🔥 มั่นใจที่จะลบรายงานบันทึกเวลาปฏิบัติงานและชั่วโมงทั้งหมดของทุกคนออกใช่หรือไม่?")) {
+                localStorage.removeItem('wp_logs_v2');
+                loadCalculatedLogs();
+                alert("🗑️ ล้างฐานสถิติเวลาเรียบร้อยแล้ว");
+            }
+        }
+    </script>
+</body>
+</html>
