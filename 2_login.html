@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>2. 进入ระบบพนักงาน</title>
+    <style>
+        body { background: #f1f5f9; font-family: sans-serif; padding: 40px; display: flex; justify-content: center; }
+        .box { background: white; padding: 25px; border-radius: 12px; border: 1px solid #cbd5e1; width: 350px; text-align: center; }
+        input { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; outline: none; }
+        button { width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .link-text { display: block; margin-top: 15px; font-size: 13px; color: #4f46e5; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2 style="margin-top:0; color:#10b981;">🔐 2. เข้าสู่ระบบพนักงาน</h2>
+        <p style="font-size:11px; color:#64748b; margin-bottom:10px;">💡 บัญชีทดลองด่วน: User: <b>demo</b> / Pass: <b>1234</b></p>
+        <input type="text" id="logUser" value="demo">
+        <input type="password" id="logPass" value="1234">
+        <button type="button" onclick="doLogin()">ล็อกอินเข้าทำงาน</button>
+        <a href="1_register.html" class="link-text">⬅️ หากยังไม่มีบัญชี คลิกตรงนี้เพื่อไปสมัครสมาชิก</a>
+    </div>
+    <script>
+        function doLogin() {
+            var uIn = document.getElementById('logUser').value.trim();
+            var pIn = document.getElementById('logPass').value.trim();
+            var accounts = JSON.parse(localStorage.getItem('wp_accounts') || '[{"user":"demo","pass":"1234","name":"นายสมชาย ใจดี"}]');
+            var match = null;
+            for (var i = 0; i < accounts.length; i++) {
+                if (accounts[i].user === uIn && accounts[i].pass === pIn) { match = accounts[i]; break; }
+            }
+            if (match !== null) {
+                alert("🔓 ล็อกอินสำเร็จ! สวัสดีคุณ " + match.name);
+                // ลิงก์ส่งค่าชื่อพนักงานพ่วงไปที่หน้าแดชบอร์ดเช็คอินอย่างปลอดภัย
+                window.location.href = "3_dashboard.html?staffname=" + encodeURIComponent(match.name);
+            } else {
+                alert("❌ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง หรือยังไม่ได้สมัครสมาชิก");
+            }
+        }
+    </script>
+</body>
+</html>

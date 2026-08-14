@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>1. สมัครสมาชิกพนักงานใหม่</title>
+    <style>
+        body { background: #f1f5f9; font-family: sans-serif; padding: 40px; display: flex; justify-content: center; }
+        .box { background: white; padding: 25px; border-radius: 12px; border: 1px solid #cbd5e1; width: 350px; text-align: center; }
+        input { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; outline: none; }
+        button { width: 100%; padding: 12px; background: #4f46e5; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .link-text { display: block; margin-top: 15px; font-size: 13px; color: #10b981; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2 style="margin-top:0; color:#4f46e5;">📌 1. สมัครสมาชิกพนักงานใหม่</h2>
+        <input type="text" id="regUser" placeholder="ตั้งชื่อผู้ใช้ (Username)">
+        <input type="password" id="regPass" placeholder="ตั้งรหัสผ่าน (Password)">
+        <input type="text" id="regName" placeholder="ชื่อ - นามสกุลจริงของคุณ">
+        <button type="button" onclick="doRegister()">ยืนยันสมัครสมาชิก</button>
+        <a href="2_login.html" class="link-text">➡️ สมัครแล้ว คลิกตรงนี้เพื่อไปหน้าล็อกอิน</a>
+    </div>
+    <script>
+        function doRegister() {
+            var u = document.getElementById('regUser').value.trim();
+            var p = document.getElementById('regPass').value.trim();
+            var n = document.getElementById('regName').value.trim();
+            if (u === "" || p === "" || n === "") { alert("⚠️ กรุณากรอกข้อมูลให้ครบทุกช่องครับ"); return; }
+            
+            // ใช้ระบบเซฟลงถังความจำเบราว์เซอร์แยกไฟล์
+            var accounts = JSON.parse(localStorage.getItem('wp_accounts') || '[{"user":"demo","pass":"1234","name":"นายสมชาย ใจดี"}]');
+            for (var i = 0; i < accounts.length; i++) {
+                if (accounts[i].user === u) { alert("❌ ชื่อผู้ใช้นี้มีคนใช้แล้วครับ"); return; }
+            }
+            accounts.push({ user: u, pass: p, name: n });
+            localStorage.setItem('wp_accounts', JSON.stringify(accounts));
+            alert("🎉 สมัครสมาชิกสำเร็จ! ระบบบันทึกรายชื่อพนักงานเรียบร้อยแล้ว");
+            window.location.href = "2_login.html"; // ลิงก์กระโดดไปหน้าล็อกอินอัตโนมัติ
+        }
+    </script>
+</body>
+</html>

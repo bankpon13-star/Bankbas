@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>หน้าแรก - ระบบจัดการพนักงาน WorkPulse Portal</title>
+    <style>
+        body { 
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); 
+            font-family: 'Tahoma', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            box-sizing: border-box; 
+        }
+        /* กล่องการ์ดหน้าหลัก สไตล์ Modern Minimalist */
+        .portal-card { 
+            background: #ffffff; 
+            padding: 40px; 
+            border-radius: 28px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.05); 
+            width: 100%; 
+            max-width: 480px; 
+            text-align: center; 
+            border: 1px solid #ffffff; 
+        }
+        .logo-area {
+            width: 70px;
+            height: 70px;
+            background: #4f46e5;
+            color: #ffffff;
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            font-weight: bold;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.2);
+        }
+        .portal-card h1 { 
+            margin: 0; 
+            color: #1e293b; 
+            font-size: 24px; 
+            font-weight: bold;
+            letter-spacing: -0.5px;
+        }
+        .portal-card p { 
+            margin: 8px 0 30px 0; 
+            font-size: 13px; 
+            color: #64748b; 
+            line-height: 1.5;
+        }
+        
+        /* โซนปุ่มกดแบ่งสัดส่วนทางเลือกขนาดใหญ่ */
+        .menu-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .portal-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.2s ease-in-out;
+            border: 1px solid transparent;
+        }
+        
+        /* สไตล์ปุ่มเข้าสู่ระบบ (สีเขียวเรียบหรู) */
+        .btn-login {
+            background-color: #10b981;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+        }
+        .btn-login:hover {
+            background-color: #059669;
+            transform: translateY(-2px);
+        }
+        
+        /* สไตล์ปุ่มสมัครสมาชิกใหม่ (สีน้ำเงินโมเดิร์น) */
+        .btn-register {
+            background-color: #ffffff;
+            color: #4f46e5;
+            border-color: #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        }
+        .btn-register:hover {
+            background-color: #f8fafc;
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
+        }
+        
+        .arrow-icon {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .footer-text {
+            margin-top: 30px;
+            font-size: 11px;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="portal-card">
+        <!-- โลโก้จำลองบริษัท -->
+        <div class="logo-area">WP</div>
+        
+        <h1>WorkPulse Portal</h1>
+        <p>ยินดีต้อนรับเข้าสู่ระบบจัดการพนักงานส่วนกลาง<br>กรุณาเลือกรายการด้านล่างเพื่อเริ่มต้นปฏิบัติงาน</p>
+        
+        <div class="menu-container">
+            <!-- ปุ่มทางเข้าที่ 1: ลิงก์กระโดดข้ามหน้าต่างไปที่หน้าล็อกอิน (2_login.html) -->
+            <a href="2_login.html" class="portal-btn btn-login">
+                <span>🔐 1. เข้าสู่ระบบพนักงาน (Login)</span>
+                <span class="arrow-icon">→</span>
+            </a>
+            
+            <!-- ปุ่มทางเข้าที่ 2: ลิงก์กระโดดข้ามหน้าต่างไปที่หน้าสมัครสมาชิก (1_register.html) ตามสั่ง -->
+            <a href="1_register.html" class="portal-btn btn-register">
+                <span>📌 2. ลงทะเบียนพนักงานใหม่ (Register)</span>
+                <span class="arrow-icon">→</span>
+            </a>
+        </div>
+        
+        <div class="footer-text">© 2026 WorkPulse System. All Rights Reserved.</div>
+    </div>
+
+</body>
+</html>
