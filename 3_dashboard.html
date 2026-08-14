@@ -2,10 +2,10 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>3. แดชบอร์ดบันทึกเวลาและตารางด้านล่าง</title>
+    <title>3. แดชบอร์ดบันทึกเวลาปฏิบัติงานพนักงาน</title>
     <style>
         body { background: #f1f5f9; font-family: sans-serif; margin: 0; padding: 40px; display: flex; justify-content: center; }
-        .wrapper { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 20px; }
+        .wrapper { width: 100%; max-width: 550px; display: flex; flex-direction: column; gap: 20px; }
         .box { background: white; padding: 25px; border-radius: 12px; border: 1px solid #cbd5e1; }
         .box h2 { margin-top: 0; font-size: 16px; text-align: center; }
         input { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; outline: none; }
@@ -14,17 +14,16 @@
         .btn-red { background: #ef4444; }
         .btn-amber { background: #f59e0b; color: #1e293b; width: auto; padding: 6px 12px; font-size: 11px; border-radius: 4px; }
         .btn-exit { background: #64748b; margin-top: 15px; }
-        table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; margin-top: 15px; }
-        th, td { padding: 10px; border-bottom: 1px solid #e2e8f0; }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: left; margin-top: 15px; }
+        th, td { padding: 8px; border-bottom: 1px solid #e2e8f0; }
         th { background: #1e293b; color: white; }
     </style>
 </head>
 <body>
     <div class="wrapper">
-        <!-- ⏱️ ส่วนเช็คอินสถานที่ -->
         <div class="box">
             <h2 style="color:#334155; margin-bottom: 5px;">⏱️ 3. ลงเวลาเช็คอินและสถานที่ปฏิบัติงาน</h2>
-            <div id="userDisplay" style="font-size: 13px; color: #4f46e5; font-weight: bold; margin-bottom: 15px; text-align: center;">🟢 พนักงานปัจจุบัน: กำลังดึงข้อมูล...</div>
+            <div id="userDisplay" style="font-size: 13px; color: #4f46e5; font-weight: bold; margin-bottom: 15px; text-align: center;">👤 พนักงานปัจจุบัน: กำลังดึงข้อมูล...</div>
             <input type="text" id="locationInput" placeholder="พิมพ์ชื่อพิกัดสถานที่ปฏิบัติงาน (เช่น คลังบางนา)">
             <div style="display: flex; gap: 8px;">
                 <button type="button" onclick="checkIn()" class="btn-green" style="flex:1;">📍 เช็คอิน (In)</button>
@@ -33,45 +32,46 @@
             <button type="button" onclick="window.location.href='2_login.html'" class="btn-exit">🚪 ออกจากระบบ (สลับบัญชี)</button>
         </div>
 
-        <!-- 📊 ตารางรายงานสรุปเวลาแสดงผลด้านล่างสุดตามสั่ง -->
         <div class="box">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <h2 style="margin: 0; color:#1e293b; font-size: 15px;">📊 4. รายงานบันทึกเวลาปฏิบัติงานและพิกัดจัดส่ง</h2>
-                <button type="button" onclick="clearLogs()" class="btn-amber">ล้างประวัติ</button>
+                <h2 style="margin: 0; color:#1e293b; font-size: 15px;">📊 4. ประวัติการลงเวลาของฉันวันนี้</h2>
+                <button type="button" onclick="clearLogs()" class="btn-amber">ล้างประวัติหน้าจอ</button>
             </div>
             <table>
                 <thead>
                     <tr>
-                        <th>ชื่อพนักงาน</th>
-                        <th>สถานที่ส่งสินค้า</th>
-                        <th>เวลาเข้า (In)</th>
-                        <th>เวลาออก (Out)</th>
+                        <th>วันที่</th>
+                        <th>สถานที่</th>
+                        <th>เวลาเข้า</th>
+                        <th>เวลาออก</th>
                     </tr>
                 </thead>
                 <tbody id="bottomTableBody">
-                    <tr><td colspan="4" style="text-align:center; color:#94a3b8; padding: 20px;">ปัจจุบันหน้าจอนี้ยังไม่มีประวัติการกดเช็คอิน</td></tr>
+                    <tr><td colspan="4" style="text-align:center; color:#94a3b8; padding: 20px;">ปัจจุบันยังไม่มีประวัติการกดเช็คอิน</td></tr>
                 </tbody>
             </table>
         </div>
     </div>
     <script>
-        // แกะรหัสชื่อพนักงานที่ถูกลิงก์ส่งข้ามหน้าต่างมาอย่างแม่นยำ 100%
         var urlParams = new URLSearchParams(window.location.search);
         var currentStaffName = urlParams.get('staffname') || "ผู้ใช้ทั่วไป";
         document.getElementById('userDisplay').innerText = "👤 พนักงานปัจจุบัน: คุณ " + currentStaffName;
 
-        var logsList = JSON.parse(localStorage.getItem('wp_logs') || '[]');
+        var logsList = JSON.parse(localStorage.getItem('wp_logs_v2') || '[]');
 
         function checkIn() {
             var loc = document.getElementById('locationInput').value.trim();
             if (loc === "") { alert("⚠️ กรุณาพิมพ์ระบุสถานที่ส่งของก่อนกดปุ่มครับ"); return; }
-            var time = new Date().toLocaleTimeString('th-TH');
             
-            logsList.push({ name: currentStaffName, location: loc, inTime: time, outTime: "— กำลังส่งของ —" });
-            localStorage.setItem('wp_logs', JSON.stringify(logsList));
+            var today = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+            var time = new Date().toLocaleTimeString('th-TH');
+            var rawInTime = new Date().getTime(); // ล็อกแสตมป์มิลลิวินาทีไว้ใช้คำนวณชั่วโมงหลังบ้าน
+            
+            logsList.push({ name: currentStaffName, date: today, location: loc, inTime: time, outTime: "— กำลังส่งของ —", rawIn: rawInTime, rawOut: null, totalHours: "—" });
+            localStorage.setItem('wp_logs_v2', JSON.stringify(logsList));
             
             document.getElementById('locationInput').value = "";
-            alert("📍 บันทึกเช็คอินสำเร็จ!");
+            alert("📍 บันทึกเข้างานสำเร็จ!");
             renderTable();
         }
 
@@ -84,8 +84,20 @@
             }
             if (!target) { alert("⚠️ ไม่พบรอบประวัติเช็คอินที่ยังทำงานค้างอยู่ของคุณครับ"); return; }
             
-            target.outTime = new Date().toLocaleTimeString('th-TH');
-            localStorage.setItem('wp_logs', JSON.stringify(logsList));
+            var time = new Date().toLocaleTimeString('th-TH');
+            var rawOutTime = new Date().getTime();
+            
+            target.outTime = time;
+            target.rawOut = rawOutTime;
+            
+            // คำนวณความต่างชั่วโมงและนาทีจริง
+            var diffMs = rawOutTime - target.rawIn;
+            var diffMins = Math.floor(diffMs / 1000 / 60);
+            var hours = Math.floor(diffMins / 60);
+            var mins = diffMins % 60;
+            target.totalHours = hours + " ชม. " + mins + " นาที";
+
+            localStorage.setItem('wp_logs_v2', JSON.stringify(logsList));
             alert("🚪 ลงเวลาเช็คเอาท์ออกงานสำเร็จ!");
             renderTable();
         }
@@ -93,24 +105,24 @@
         function renderTable() {
             var tbody = document.getElementById('bottomTableBody');
             tbody.innerHTML = "";
-            if (logsList.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#94a3b8; padding: 20px;">ปัจจุบันหน้าจอนี้ยังไม่มีประวัติการกดเช็คอิน</td></tr>';
+            var myLogs = logsList.filter(function(item) { return item.name === currentStaffName; });
+            if (myLogs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#94a3b8; padding: 20px;">ปัจจุบันยังไม่มีประวัติการกดเช็คอิน</td></tr>';
                 return;
             }
-            for (var j = logsList.length - 1; j >= 0; j--) {
-                tbody.innerHTML += '<tr><td><b>👤 ' + logsList[j].name + '</b></td><td>📍 ' + logsList[j].location + '</td><td style="color:#10b981; font-weight:bold;">' + logsList[j].inTime + '</td><td style="color:#ef4444; font-weight:bold;">' + logsList[j].outTime + '</td></tr>';
+            for (var j = myLogs.length - 1; j >= 0; j--) {
+                tbody.innerHTML += '<tr><td>' + myLogs[j].date + '</td><td>📍 ' + myLogs[j].location + '</td><td style="color:#10b981; font-weight:bold;">' + myLogs[j].inTime + '</td><td style="color:#ef4444; font-weight:bold;">' + myLogs[j].outTime + '</td></tr>';
             }
         }
 
         function clearLogs() {
             if (confirm("🔥 ยืนยันล้างสถิติเวลาบนหน้าจอทั้งหมดใช่หรือไม่?")) {
-                logsList = [];
-                localStorage.setItem('wp_logs', JSON.stringify(logsList));
+                logsList = logsList.filter(function(item) { return item.name !== currentStaffName; });
+                localStorage.setItem('wp_logs_v2', JSON.stringify(logsList));
                 renderTable();
             }
         }
-
-        renderTable(); // ดึงข้อมูลเก่าที่คอมพิวเตอร์เคยจำไว้ขึ้นตารางโชว์ด้านล่างอัตโนมัติ
+        renderTable();
     </script>
 </body>
 </html>
