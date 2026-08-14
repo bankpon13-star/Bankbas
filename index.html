@@ -96,6 +96,20 @@
             border-color: #cbd5e1;
             transform: translateY(-2px);
         }
+
+        /* 🛡️ สไตล์ปุ่มลิงก์พิเศษสำหรับผู้ดูแลระบบ/Admin (สีเข้มดุดัน แต่อยู่ล่างสุดแยกสัดส่วน) */
+        .btn-admin {
+            background-color: #1e293b;
+            color: #38bdf8;
+            border-color: #334155;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-top: 10px;
+        }
+        .btn-admin:hover {
+            background-color: #0f172a;
+            border-color: #475569;
+            transform: translateY(-2px);
+        }
         
         .arrow-icon {
             font-size: 16px;
@@ -118,15 +132,23 @@
         <p>ยินดีต้อนรับเข้าสู่ระบบจัดการพนักงานส่วนกลาง<br>กรุณาเลือกรายการด้านล่างเพื่อเริ่มต้นปฏิบัติงาน</p>
         
         <div class="menu-container">
-            <!-- ปุ่มทางเข้าที่ 1: ลิงก์กระโดดข้ามหน้าต่างไปที่หน้าล็อกอิน (2_login.html) -->
+            <!-- ปุ่มทางเข้าที่ 1: ลิงก์กระโดดข้ามหน้าต่างไปที่หน้าล็อกอินพนักงาน (2_login.html) -->
             <a href="2_login.html" class="portal-btn btn-login">
                 <span>🔐 1. เข้าสู่ระบบพนักงาน (Login)</span>
                 <span class="arrow-icon">→</span>
             </a>
             
-            <!-- ปุ่มทางเข้าที่ 2: ลิงก์กระโดดข้ามหน้าต่างไปที่หน้าสมัครสมาชิก (1_register.html) ตามสั่ง -->
+            <!-- ปุ่มทางเข้าที่ 2: ลิงก์กระโดดข้ามหน้าต่างไปที่หน้าสมัครสมาชิกพนักงาน (1_register.html) -->
             <a href="1_register.html" class="portal-btn btn-register">
                 <span>📌 2. ลงทะเบียนพนักงานใหม่ (Register)</span>
+                <span class="arrow-icon">→</span>
+            </a>
+
+            <hr style="border: 0; border-top: 1px dashed #cbd5e1; margin: 15px 0 5px 0;">
+
+            <!-- 🛡️ ปุ่มทางเข้าลับแอดมิน: ลิงก์กระโดดข้ามหน้าต่างไปที่หน้าหลังบ้าน (admin.html) ตามสั่ง -->
+            <a href="admin.html" class="portal-btn btn-admin">
+                <span>🛡️ 3. ระบบหลังบ้านผู้ดูแลระบบ (Admin)</span>
                 <span class="arrow-icon">→</span>
             </a>
         </div>
